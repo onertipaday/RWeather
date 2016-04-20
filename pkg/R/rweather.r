@@ -122,11 +122,11 @@ getWeatherFromYahoo <- function( location_id ="10001" , units = "metric", messag
 #' getWeatherFromNOAA(station_id="KJFK")  # current observation for New York }
 #'
 getWeatherFromNOAA <- function( station_id ="KJFK", message = FALSE ){
-	# load the XML feeds for the NOAA
 	weather.url = paste( "http://www.weather.gov/xml/current_obs/", URLencode(station_id), ".xml", sep="" )
-	xml = xmlTreeParse(weather.url, useInternalNodes=TRUE) # to get the xml data for the given location
+	r <- GET(weather.url, message=FALSE)
+	xml = htmlParse(r, encoding = "UTF-8")
 	current_observation <- data.frame( 
-		location=xpathSApply(xml,"//current_observation/location", xmlValue),
+		location=xpathSApply(xml,"//current_observation/location",xmlValue),
 		latitude=xpathSApply(xml,"//current_observation/latitude", xmlValue),
 		longitude=xpathSApply(xml,"//current_observation/longitude", xmlValue),
 		observation_time=xpathSApply(xml,"//current_observation/observation_time", xmlValue),
